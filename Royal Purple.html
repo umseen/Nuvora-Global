@@ -1,1 +1,375 @@
-Website Royal Purple 
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>RoyalSocial — Prototype</title>
+    <style>
+        :root{--purple1:#2b0b3a;--purple2:#58206b;--gold:#d4af37;--muted:#ddd;--bg:#0b0610}
+        *{box-sizing:border-box;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
+        body{margin:0;background:linear-gradient(180deg,var(--bg), #12051a 60%);color:#fff;}
+        .app{display:grid;grid-template-columns:260px 1fr 360px;gap:20px;min-height:100vh;padding:28px}
+
+        /* Header */
+        header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-radius:16px;background:linear-gradient(90deg,var(--purple1),var(--purple2));box-shadow:0 10px 30px rgba(10,6,12,.6);margin-bottom:14px}
+        .brand{display:flex;align-items:center;gap:12px}
+        .logo{width:52px;height:52px;border-radius:12px;background:radial-gradient(circle at 30% 30%, #8a45d1, #4b0f60);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--gold);font-size:20px;box-shadow:0 6px 20px rgba(0,0,0,.6)}
+        h1{margin:0;font-size:20px;letter-spacing:0.6px}
+        .header-actions{display:flex;gap:10px;align-items:center}
+        .btn{background:transparent;border:1px solid rgba(212,175,55,.12);padding:10px 14px;border-radius:10px;color:var(--gold);cursor:pointer}
+
+        /* Left column - friends */
+        .col{background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));border-radius:16px;padding:18px}
+        .friends-list{display:flex;flex-direction:column;gap:12px}
+        .friend{display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;cursor:pointer}
+        .friend:hover{background:rgba(255,255,255,.02)}
+        .avatar{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#6e2ba8,#8b44c6);display:flex;align-items:center;justify-content:center;font-weight:700}
+        .status{width:9px;height:9px;border-radius:50%;margin-left:auto}
+        .online{background:#3be37b;box-shadow:0 0 8px rgba(59,227,123,.12)}
+        .offline{background:#444}
+
+        /* Middle - feed */
+        .feed{padding:18px;border-radius:16px;min-height:60vh}
+        .post{background:linear-gradient(180deg, rgba(255,255,255,.01), rgba(255,255,255,.005));padding:14px;border-radius:12px;margin-bottom:14px}
+        .post .meta{display:flex;align-items:center;gap:12px}
+        .thumbnail{width:100%;height:220px;border-radius:10px;background:#111;display:flex;align-items:center;justify-content:center;color:#888;font-size:14px;cursor:pointer;background-size:cover;background-position:center;position:relative}
+        .thumbnail-overlay{position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3);border-radius:10px}
+        .play-btn{width:60px;height:60px;border-radius:50%;background:rgba(212,175,55,.9);display:flex;align-items:center;justify-content:center;font-size:28px;color:#000}
+        .post .content{margin-top:10px}
+
+        /* Right - profile / game */
+        .panel .section{margin-bottom:16px}
+        .game-card{padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,.015), rgba(255,255,255,.01))}
+        .lead{font-size:13px;color:var(--muted)}
+
+        /* Chat modal */
+        .chat-window{position:fixed;right:30px;bottom:30px;width:360px;border-radius:12px;background:linear-gradient(180deg,rgba(12,6,20,.96),rgba(8,3,14,.96));box-shadow:0 20px 60px rgba(0,0,0,.6);overflow:hidden}
+        .chat-header{display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid rgba(255,255,255,.03)}
+        .chat-messages{height:320px;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+        .msg{max-width:78%;padding:8px 10px;border-radius:10px}
+        .msg.me{align-self:flex-end;background:linear-gradient(180deg,#3a0f5a,#7a2db3)}
+        .msg.them{align-self:flex-start;background:rgba(255,255,255,.03)}
+        .chat-input{display:flex;gap:8px;padding:10px;border-top:1px solid rgba(255,255,255,.02)}
+        input[type="text"]{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.03);background:transparent;color:#fff}
+
+        /* Modal */
+        .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(rgba(2,1,4,.6),rgba(2,1,4,.85));z-index:60}
+        .modal.show{display:flex}
+        .modal-card{width:min(900px,94%);background:#07020a;border-radius:12px;padding:18px}
+        
+        .video-player{width:100%;max-width:720px;background:#000;border-radius:8px;overflow:hidden}
+        video{width:100%;display:block}
+
+        footer{grid-column:1/-1;text-align:center;color:#8b7aa3;font-size:13px;padding:10px}
+
+        @media(max-width:1000px){.app{grid-template-columns:1fr;padding:14px}.col{display:none}.app header{border-radius:12px}.chat-window{right:10px;width:92%}}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="brand">
+            <div class="logo">RS</div>
+            <div>
+                <h1>RoyalSocial</h1>
+                <div style="font-size:12px;color:var(--muted)">A royal, private social experience — prototype</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn" id="openGame">Play — Royal Flight</button>
+            <button class="btn" id="openChat">Open Chat</button>
+        </div>
+    </header>
+
+    <main class="app">
+        <aside class="col">
+            <div class="panel">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+                    <div style="width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,#8a45d1,#5b1d6f);display:flex;align-items:center;justify-content:center;font-weight:700">TY</div>
+                    <div>
+                        <div style="font-weight:700">Temorius</div>
+                        <div style="font-size:13px;color:var(--muted)">Bangladesh • Prototype</div>
+                    </div>
+                </div>
+
+                <h3 style="margin:8px 0 8px 0;color:var(--gold)">Friends</h3>
+                <div class="friends-list" id="friendsList"></div>
+            </div>
+        </aside>
+
+        <section class="feed col" id="feed">
+            <div class="post">
+                <div class="meta">
+                    <div class="avatar">AB</div>
+                    <div>
+                        <div style="font-weight:700">Ayesha B.</div>
+                        <div class="lead">Shared a video • 2h</div>
+                    </div>
+                </div>
+                <div class="thumbnail" data-video-id="sample1" style="background-image:url('https://via.placeholder.com/720x220?text=Travel+Video')">
+                    <div class="thumbnail-overlay">
+                        <div class="play-btn">▶</div>
+                    </div>
+                </div>
+                <div class="content">Check out my travel video! (placeholder)</div>
+            </div>
+
+            <div class="post">
+                <div class="meta">
+                    <div class="avatar">MR</div>
+                    <div>
+                        <div style="font-weight:700">Monir R.</div>
+                        <div class="lead">Posted a photo • 1d</div>
+                    </div>
+                </div>
+                <div class="thumbnail" style="background-image:url('https://via.placeholder.com/720x220?text=Sunset')">
+                    <div class="thumbnail-overlay">
+                        <div style="color:#aaa;font-size:12px">Photo</div>
+                    </div>
+                </div>
+                <div class="content">Royal evening at the river.</div>
+            </div>
+        </section>
+
+        <aside class="col panel">
+            <div class="section">
+                <h3 style="margin:0 0 6px 0;color:var(--gold)">Game — Royal Flight</h3>
+                <div class="game-card">
+                    <div style="font-weight:700">Flap like a royal bird</div>
+                    <div class="lead">Tap or press space to flap. Offline: saves high score locally.</div>
+                    <div style="margin-top:10px;display:flex;gap:8px">
+                        <button class="btn" id="playNow">Play Now</button>
+                        <button class="btn" id="viewLeaderboard">Leaderboard</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h4 style="margin:0 0 6px 0;color:var(--gold)">Top Scores</h4>
+                <div id="topScores" class="lead">—</div>
+            </div>
+
+            <div class="section">
+                <h4 style="margin:0 0 6px 0;color:var(--gold)">About Prototype</h4>
+                <div class="lead">Single-file demo. Save as index.html and open in your browser. See developer notes inside code.</div>
+            </div>
+        </aside>
+
+    </main>
+
+    <div class="chat-window" id="chatWindow" style="display:none">
+        <div style="display:flex;flex-direction:column;width:100%">
+            <div class="chat-header">
+                <div class="avatar">AB</div>
+                <div style="font-weight:700">Chat with Ayesha</div>
+                <div style="margin-left:auto;font-size:12px;color:var(--muted)" id="chatStatus">online</div>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Type a message..." />
+                <button class="btn" id="sendMsg">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-card" id="modalCard"></div>
+    </div>
+
+    <footer>RoyalSocial Prototype — made for demo. Save file locally to run offline. ©</footer>
+
+    <script>
+        /* =========================
+             Video API Config
+             =========================*/
+        const VIDEO_API = {
+            baseURL: 'https://api.example.com/videos', // Change to your API
+            getThumbnail: async (videoId) => {
+                try {
+                    const response = await fetch(`${VIDEO_API.baseURL}/${videoId}/thumbnail`);
+                    const data = await response.json();
+                    return data.thumbnailUrl || 'https://via.placeholder.com/720x220?text=Video';
+                } catch (e) {
+                    console.log('Using placeholder thumbnail');
+                    return 'https://via.placeholder.com/720x220?text=Video';
+                }
+            },
+            getVideoUrl: async (videoId) => {
+                try {
+                    const response = await fetch(`${VIDEO_API.baseURL}/${videoId}`);
+                    const data = await response.json();
+                    return data.videoUrl || null;
+                } catch (e) {
+                    console.log('Video API unavailable');
+                    return null;
+                }
+            }
+        };
+
+        /* =========================
+             Tiny Prototype JS
+             =========================*/
+
+        // Sample friends
+        const friends = [
+            {id:'ayesha',name:'Ayesha B.',initials:'AB',online:true},
+            {id:'monir',name:'Monir R.',initials:'MR',online:false},
+            {id:'zara',name:'Zara K.',initials:'ZK',online:true}
+        ];
+
+        const friendsList = document.getElementById('friendsList');
+        friends.forEach(f=>{
+            const el = document.createElement('div'); el.className='friend'; el.dataset.id=f.id;
+            el.innerHTML = `<div class='avatar'>${f.initials}</div><div><div style='font-weight:700'>${f.name}</div><div style='font-size:12px;color:var(--muted)'>Tap to chat</div></div><div class='status ${f.online?'online':'offline'}'></div>`;
+            el.addEventListener('click',()=>openChatWith(f));
+            friendsList.appendChild(el);
+        });
+
+        // Chat logic
+        const chatWindow = document.getElementById('chatWindow');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        let activeFriend = null;
+
+        function openChatWith(friend){
+            activeFriend = friend;
+            document.querySelector('.chat-header .avatar').textContent = friend.initials;
+            document.querySelector('.chat-header div:nth-child(2)').textContent = 'Chat with '+friend.name;
+            document.getElementById('chatStatus').textContent = friend.online? 'online':'offline';
+            chatWindow.style.display='flex';
+            renderMessages();
+        }
+
+        document.getElementById('openChat').addEventListener('click',()=>openChatWith(friends[0]));
+
+        function getMessagesFor(id){
+            const raw = localStorage.getItem('chat_'+id);
+            return raw? JSON.parse(raw): [];
+        }
+        function saveMessagesFor(id,arr){ localStorage.setItem('chat_'+id, JSON.stringify(arr)); }
+
+        function renderMessages(){
+            if(!activeFriend) return;
+            chatMessages.innerHTML='';
+            const msgs = getMessagesFor(activeFriend.id);
+            msgs.forEach(m=>{
+                const d = document.createElement('div'); d.className='msg '+(m.me? 'me':'them'); d.textContent = m.text + '\n\n' + new Date(m.t).toLocaleString();
+                chatMessages.appendChild(d);
+            });
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        document.getElementById('sendMsg').addEventListener('click',sendMsg);
+        chatInput.addEventListener('keydown',e=>{ if(e.key==='Enter') sendMsg(); });
+
+        function sendMsg(){
+            const v = chatInput.value.trim(); if(!v || !activeFriend) return; chatInput.value='';
+            const msgs = getMessagesFor(activeFriend.id);
+            msgs.push({me:true,text:v,t:Date.now()});
+            setTimeout(()=>{ msgs.push({me:false,text:'(auto-reply) I got your message: "'+v+'"',t:Date.now()}); saveMessagesFor(activeFriend.id,msgs); renderMessages(); },800);
+            saveMessagesFor(activeFriend.id,msgs); renderMessages();
+        }
+
+        // Video player with API
+        document.querySelectorAll('.thumbnail').forEach(th=>{
+            th.addEventListener('click', async ()=>{
+                const videoId = th.dataset.videoId;
+                if(!videoId) return;
+                
+                const videoUrl = await VIDEO_API.getVideoUrl(videoId);
+                const html = videoUrl ? 
+                    `<h2 style='color:var(--gold)'>Video Player</h2>
+                     <div class='video-player'>
+                         <video controls><source src='${videoUrl}' type='video/mp4'>Your browser does not support HTML5 video.</video>
+                     </div>
+                     <div style='margin-top:12px;text-align:right'><button class='btn' id='closeModal'>Close</button></div>` :
+                    `<h2 style='color:var(--gold)'>Video Player</h2><p class='lead'>Video not available. Add your video URL to the API.</p><div style='height:360px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:#05020a;color:#888'>Video Unavailable</div><div style='margin-top:12px;text-align:right'><button class='btn' id='closeModal'>Close</button></div>`;
+                
+                showModal(html);
+                document.getElementById('closeModal').addEventListener('click',hideModal);
+            });
+        });
+
+        function showModal(html){ const m = document.getElementById('modal'); document.getElementById('modalCard').innerHTML = html; m.classList.add('show'); }
+        function hideModal(){ document.getElementById('modal').classList.remove('show'); }
+
+        // Top scores UI
+        function updateTopScores(){ const raw = localStorage.getItem('royal_highscores'); const arr = raw? JSON.parse(raw): []; const el = document.getElementById('topScores'); if(!arr.length){ el.textContent='No games played yet.'; return;} el.innerHTML = arr.slice(0,5).map((s,i)=>`${i+1}. ${s.name} — ${s.score}`).join('<br>'); }
+        updateTopScores();
+
+        document.getElementById('playNow').addEventListener('click',()=>openGame());
+        document.getElementById('openGame').addEventListener('click',()=>openGame());
+        document.getElementById('viewLeaderboard').addEventListener('click',()=>{
+            const raw = localStorage.getItem('royal_highscores')||'[]'; const arr = JSON.parse(raw);
+            showModal(`<h2 style='color:var(--gold)'>Leaderboard</h2><div style='min-height:100px'>${arr.length? arr.map((s,i)=>`<div style='padding:6px 0'>${i+1}. <strong>${s.name}</strong> — ${s.score}</div>`).join('') : '<div class="lead">No scores yet.</div>'}</div><div style='text-align:right;margin-top:8px'><button class='btn' id='closeModal'>Close</button></div>`);
+            document.getElementById('closeModal').addEventListener('click',hideModal);
+        });
+
+        /* Flappy Bird clone */
+        function openGame(){
+            showModal(`<h2 style='color:var(--gold)'>Royal Flight</h2>
+                <div style='display:flex;gap:12px;align-items:flex-start'>
+                    <canvas id='gameCanvas' width='720' height='480' style='border-radius:8px;background:#020007'></canvas>
+                    <div style='min-width:220px'>
+                        <div class='lead'>Controls: click/tap or press Space to flap. Avoid the golden pillars! Score increases per pipe passed.</div>
+                        <div style='margin-top:12px'><button class='btn' id='restartGame'>Restart</button> <button class='btn' id='closeGame'>Close</button></div>
+                        <div style='margin-top:16px'><strong>High Score:</strong><div id='gameHigh' class='lead'>—</div></div>
+                    </div>
+                </div>`);
+
+            document.getElementById('closeGame').addEventListener('click',hideModal);
+            const canvas = document.getElementById('gameCanvas');
+            startGame(canvas);
+        }
+
+        function startGame(canvas){
+            const ctx = canvas.getContext('2d');
+            const W = canvas.width, H = canvas.height;
+            let bird = {x:100,y:H/2,vy:0,w:28,h:22};
+            const gravity = 0.6, flap = -10;
+            let pipes = [], frame=0, score=0, speed=2.2, gameOver=false;
+
+            function spawnPipe(){
+                const gap = 140; const topH = 80 + Math.random()*(H-260);
+                pipes.push({x:W,y:0,h:topH,type:'top'});
+                pipes.push({x:W,y:topH+gap,h:H-(topH+gap),type:'bottom'});
+            }
+
+            function reset(){ bird={x:100,y:H/2,vy:0,w:28,h:22}; pipes=[]; frame=0; score=0; gameOver=false; spawnPipe(); }
+            reset();
+
+            function loop(){
+                frame++;
+                bird.vy += gravity; bird.y += bird.vy;
+                if(frame%90===0) spawnPipe();
+                for(let i=pipes.length-1;i>=0;i--){ pipes[i].x -= speed; if(pipes[i].x + 60 < 0) pipes.splice(i,1); }
+                pipes.forEach(p=>{ if(!p.scored && p.type==='top' && p.x+60 < bird.x){ score++; p.scored=true; } });
+                if(bird.y + bird.h/2 > H || bird.y - bird.h/2 < 0) gameOver=true;
+                for(const p of pipes){ const pw=60; const ph=p.h; const px=p.x; const py=p.y; if(bird.x+bird.w/2 > px && bird.x-bird.w/2 < px+pw){ if(bird.y - bird.h/2 < py+ph && bird.y + bird.h/2 > py) gameOver=true; }}
+
+                ctx.clearRect(0,0,W,H);
+                const g = ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,'#0b0410'); g.addColorStop(1,'#12051a'); ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+                for(const p of pipes){ ctx.fillStyle = '#a67c1a'; ctx.fillRect(p.x, p.y, 60, p.h); ctx.fillStyle = 'rgba(0,0,0,0.12)'; ctx.fillRect(p.x, p.y, 60, p.h); }
+                ctx.save(); ctx.translate(bird.x, bird.y); ctx.rotate(Math.min(Math.max(bird.vy/10,-0.6),0.6)); ctx.fillStyle='#e6c86b'; ctx.fillRect(-bird.w/2,-bird.h/2,bird.w,bird.h); ctx.restore();
+                ctx.fillStyle='rgba(255,255,255,.9)'; ctx.font='28px sans-serif'; ctx.fillText('Score: '+score, 20, 40);
+
+                if(gameOver){ ctx.fillStyle='rgba(0,0,0,.6)'; ctx.fillRect(0,0,W,H); ctx.fillStyle='var(--gold)'; ctx.font='36px sans-serif'; ctx.fillText('Game Over', W/2-90, H/2-10); ctx.font='20px sans-serif'; ctx.fillStyle='#fff'; ctx.fillText('Score: '+score, W/2-40, H/2+20); saveScore(score); document.getElementById('gameHigh').textContent = getHighScore(); return; }
+                requestAnimationFrame(loop);
+            }
+
+            function flapBird(){ if(gameOver) return; bird.vy = flap; }
+            canvas.addEventListener('mousedown',flapBird); document.addEventListener('keydown',e=>{ if(e.code==='Space'){ e.preventDefault(); flapBird(); } });
+
+            document.getElementById('restartGame').addEventListener('click',()=>{ reset(); loop(); document.getElementById('gameHigh').textContent = getHighScore(); });
+
+            document.getElementById('gameHigh').textContent = getHighScore();
+            loop();
+        }
+
+        function saveScore(score){ const name = prompt('Enter name for leaderboard','Player') || 'Player'; const raw = localStorage.getItem('royal_highscores')||'[]'; const arr = JSON.parse(raw); arr.push({name,score}); arr.sort((a,b)=>b.score-a.score); localStorage.setItem('royal_highscores',JSON.stringify(arr.slice(0,50))); updateTopScores(); }
+        function getHighScore(){ const raw = localStorage.getItem('royal_highscores')||'[]'; const arr = JSON.parse(raw); return arr.length? arr[0].score : '—'; }
+
+        document.getElementById('chatWindow').style.display='none';
+        console.log('RoyalSocial prototype loaded with Video API integration.');
+    </script>
+</body>
+</html>
